@@ -1,0 +1,39 @@
+This is a mirror of http://www.vim.org/scripts/script.php?script_id=2262
+
+This script looks like 'occur' of emacs script.
+
+Create a quickfix list using all lines in the buffer containing a match for regexp.
+Search for regexp in the current buffer or all buffers.
+
+Search current buffer:
+(1) Search the word by '/' command.
+(2)  :Occur
+
+Search all buffers:
+(1) Search the word by '/' command.
+(2)  :Moccur
+
+Seach all buffers for occurrence of the word nearest to the cursor:
+(1) move the cursor to the word
+(2) :StarOccur
+
+You can use keymappings of
+  <Leader>oc   - Occur
+  <Leader>mo   - Moccur
+  <Leader>*   - StarOccur
+
+# The default <Leader> is backslash. (ex: \* = StarOccur) 
+# (see :help mapleader)
+
+[QUICKFIX KEY-MAPPING]
+This plugin enhances quickfix key-mapping.
+(when this plugin opens the quickfix window.)
+
+<Space> : Set current window height to highest.
+x : Display the occurence the current line.
+q : Quit the quickfix window.
+
+If you want to disable this, then you can set the variable in the "vimrc".
+
+  let g:occur_no_quickfix_map = 1
+
