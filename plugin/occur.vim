@@ -1,8 +1,8 @@
 "=============================================================================
 " File:        occur.vim
 " Author:      FURUSAWA, Noriyoshi (noriyosi xxx gmail dot com) xxx=@,dot=.
-" Last Change: 2008/6/8
-" Version:     0.01
+" Last Change: 2008/6/9
+" Version:     0.02
 "=============================================================================
 
 if exists('loaded_occur') || &cp
@@ -47,6 +47,9 @@ function! s:Moccur()
 endfunction
 
 function! s:SetupAndGo(func)
+    let org_efm = &errorformat
+    let &errorformat = '%f:%l:%m'
+
     " Clear the results window
     cexpr "================= occur result ================="
     cclose
@@ -59,5 +62,7 @@ function! s:SetupAndGo(func)
     " Open the results window
     keepjumps cfirst 2
     cwindow
+
+    let &errorformat = org_efm
 endfunction
 
