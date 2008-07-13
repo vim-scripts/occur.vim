@@ -1,8 +1,8 @@
 "=============================================================================
 " File:        occur.vim
 " Author:      FURUSAWA, Noriyoshi (noriyosi xxx gmail dot com) xxx=@,dot=.
-" Last Change: 2008/6/9
-" Version:     0.02
+" Last Change: 2008/7/13
+" Version:     0.03
 "=============================================================================
 
 if exists('loaded_occur') || &cp
@@ -15,16 +15,22 @@ if v:version < 700
     finish
 endif
 
+if !exists("g:occur_no_quickfix_map")
+    let g:occur_no_quickfix_map = 0
+endif
+
 " Key bind
-nmap <silent> <unique> <Leader>oc :Occur<CR>
-nmap <silent> <unique> <Leader>mo :Moccur<CR>
+nnoremap <silent> <unique> <Leader>oc :Occur<CR>
+nnoremap <silent> <unique> <Leader>mo :Moccur<CR>
+nnoremap <silent> <unique> <Leader>* *<C-o>:Moccur<CR>
 
 " Create commands
 command! Occur silent call s:SetupAndGo('s:Occur')
 command! Moccur silent call s:SetupAndGo('s:Moccur')
+command! StarOccur exec "normal! *<C-o>" <Bar> Moccur
 
 function! s:Occur()
-    let expr = 'caddexpr expand("%") . ":" . line(".") .  ":" . getline(".")'
+    let expr = 'caddexpr expand("%") . ":" . line(".") . ":" . getline(".")'
     exec 'silent keepjumps g/' . @/ . '/' . expr
 endfunction
 
@@ -54,14 +60,24 @@ function! s:SetupAndGo(func)
     cexpr "================= occur result ================="
     cclose
 
-    " Log the current point
-    +1
+    " Log the current cursor position
+    normal! H
 
+    " Do Occur
     call function(a:func)()
 
-    " Open the results window
-    keepjumps cfirst 2
-    cwindow
+    " Open the results window (and restore cursor position)
+    keepjumps cfirst 1
+    exec "normal! \<C-o>"
+    copen
+
+    " Map the key sequence on the QuickFix
+    if !g:occur_no_quickfix_map
+        nnoremap <buffer> <silent> <Space> <C-w><C-_>
+        nnoremap <buffer> <silent> x 10<C-w>_<CR>zxzz:copen<CR>
+        nnoremap <buffer> <silent> <CR> <CR>zxzz:cclose<CR>
+        nnoremap <buffer> <silent> q :cclose<CR>
+    endif
 
     let &errorformat = org_efm
 endfunction
